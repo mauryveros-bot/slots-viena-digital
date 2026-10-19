@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slots Viena Digital</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f4f0;
+      color: #292323;
+    }
+    header {
+      background: #751b29;
+      color: white;
+      padding: 35px 20px;
+      text-align: center;
+    }
+    header h1 { margin: 0; }
+    header p { color: #f1d7a2; }
+    main {
+      max-width: 1000px;
+      margin: 35px auto;
+      padding: 0 20px;
+    }
+    h2 { color: #751b29; }
+    .promociones {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .tarjeta {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 15px #00000012;
+    }
+    .tarjeta img {
+      width: 100%;
+      display: block;
+    }
+    .contenido { padding: 22px; }
+    .contenido h3 { color: #751b29; }
+    .premios {
+      color: #96712d;
+      font-weight: bold;
+    }
+    .estado { color: #666; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Slots Viena Digital</h1>
+    <p>Tu suerte, tu lugar, tu momento</p>
+  </header>
+
+  <main>
+    <h2>Promociones vigentes</h2>
+    <div id="promociones" class="promociones">
+      <p>Cargando promociones...</p>
+    </div>
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://etcodkrnkvxeptglpwwc.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_B2GJhWrbQihkwtfV1Lp9Vw_LRBzpoj5";
+
+    async function cargarPromociones() {
+      const contenedor = document.getElementById("promociones");
+
+      try {
+        const respuesta = await fetch(
+          SUPABASE_URL +
+          "/rest/v1/promociones?select=nombre,descripcion,fecha_inicio,fecha_fin,imagen_url,premios&publicada=eq.true",
+          {
+            headers: {
+              apikey: SUPABASE_KEY
+            }
+          }
+        );
+
+        if (!respuesta.ok) {
+          throw new Error("No se pudieron consultar las promociones");
+        }
+
+        const promociones = await respuesta.json();
+        contenedor.replaceChildren();
+
+        if (promociones.length === 0) {
+          contenedor.textContent = "Próximamente nuevas promociones.";
+          return;
+        }
+
+        promociones.forEach(promo => {
+          const tarjeta = document.createElement("article");
+          tarjeta.className = "tarjeta";
+
+          if (promo.imagen_url &&
+              /^https:\/\//i.test(promo.imagen_url)) {
+            const imagen = document.createElement("img");
+            imagen.src = promo.imagen_url;
+            imagen.alt = promo.nombre || "Promoción";
+            tarjeta.appendChild(imagen);
+          }
+
+          const contenido = document.createElement("div");
+          contenido.className = "contenido";
+
+          const titulo = document.createElement("h3");
+          titulo.textContent = promo.nombre || "Promoción";
+
+          const descripcion = document.createElement("p");
+          descripcion.textContent = promo.descripcion || "";
+
+          const premios = document.createElement("p");
+          premios.className = "premios";
+          premios.textContent = promo.premios || "";
+
+          contenido.append(titulo, descripcion, premios);
+          tarjeta.appendChild(contenido);
+          contenedor.appendChild(tarjeta);
+        });
+
+      } catch (error) {
+        console.error(error);
+        contenedor.textContent =
+          "No fue posible cargar las promociones.";
+      }
+    }
+
+    cargarPromociones();
+  </script>
+
+</body>
+</html>
