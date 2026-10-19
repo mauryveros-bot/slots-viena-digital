@@ -1,139 +1,25 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Slots Viena Digital</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f7f4f0;
-      color: #292323;
-    }
-    header {
-      background: #751b29;
-      color: white;
-      padding: 35px 20px;
-      text-align: center;
-    }
-    header h1 { margin: 0; }
-    header p { color: #f1d7a2; }
-    main {
-      max-width: 1000px;
-      margin: 35px auto;
-      padding: 0 20px;
-    }
-    h2 { color: #751b29; }
-    .promociones {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-    .tarjeta {
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 3px 15px #00000012;
-    }
-    .tarjeta img {
-      width: 100%;
-      display: block;
-    }
-    .contenido { padding: 22px; }
-    .contenido h3 { color: #751b29; }
-    .premios {
-      color: #96712d;
-      font-weight: bold;
-    }
-    .estado { color: #666; }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#741c2b"><meta name="description" content="Promociones y experiencias de Slots Viena Digital">
+<title>Slots Viena Digital | Viví la experiencia Ganadora</title>
+<style>
+:root{--vino:#741c2b;--vino2:#581421;--oro:#aa813c;--papel:#f8f6f3;--tinta:#29262a}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--papel);color:var(--tinta);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.5}header{background:linear-gradient(145deg,var(--vino),var(--vino2));color:white;padding:24px 20px 45px;text-align:center}header img{display:block;max-width:180px;width:50%;height:auto;margin:0 auto 24px;mix-blend-mode:screen}h1,h2,h3{font-family:Georgia,'Times New Roman',serif}h1{font-size:clamp(2rem,6vw,3.5rem);font-weight:500;line-height:1.15;margin:0 auto 12px;max-width:650px}header p{color:#f2d9d8;margin:0}header .rule{width:70px;height:2px;background:var(--oro);margin:19px auto}.wrap{width:min(1050px,calc(100% - 32px));margin:auto}nav{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}nav a{color:white;border:1px solid #ffffff65;border-radius:100px;padding:10px 17px;text-decoration:none;font-size:14px}main{padding:38px 0 60px}h2{font-size:clamp(1.7rem,4vw,2.3rem);color:var(--vino);margin:0 0 18px}.subtitle{margin:-7px 0 22px;color:#625e60}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:20px}.promo{background:white;border-radius:16px;overflow:hidden;box-shadow:0 8px 30px #2b0a1210;border:1px solid #eee7e4}.promo img{width:100%;height:auto;display:block}.promo-body{padding:22px}.promo h3{color:var(--vino);font-size:1.55rem;margin:0 0 8px}.promo p{margin:0 0 13px}.premio{color:#946b26;font-weight:750}.dates{font-size:13px;color:#696466}.button{display:inline-block;background:var(--vino);color:white;padding:12px 20px;border:0;border-radius:8px;font:inherit;font-weight:650;cursor:pointer;text-decoration:none;margin-top:10px}.details{margin-top:16px;padding-top:16px;border-top:1px solid #eee;color:#514c4d}.features{margin-top:48px}.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.feature{background:white;border:1px solid #eee5e3;border-radius:13px;padding:20px 12px;text-align:center}.feature strong{display:block;color:var(--vino);margin:5px 0}.feature span{font-size:12px;color:#716b6d}.notice{padding:16px;background:#fff;border-left:3px solid var(--oro);border-radius:8px}footer{text-align:center;background:#eee8e5;color:#61595a;padding:25px 15px;font-size:13px}a:focus-visible,button:focus-visible{outline:3px solid var(--oro);outline-offset:3px}@media(min-width:700px){header{padding-top:35px;padding-bottom:55px}.feature-grid{grid-template-columns:repeat(4,1fr)}.promo.featured{display:grid;grid-template-columns:1.15fr 1fr;align-items:center}.promo.featured img{height:100%;object-fit:contain;background:#170f12}.promo.featured .promo-body{padding:32px}}
+</style>
 </head>
 <body>
-
-  <header>
-    <h1>Slots Viena Digital</h1>
-    <p>Tu suerte, tu lugar, tu momento</p>
-  </header>
-
-  <main>
-    <h2>Promociones vigentes</h2>
-    <div id="promociones" class="promociones">
-      <p>Cargando promociones...</p>
-    </div>
-  </main>
-
-  <script>
-    const SUPABASE_URL = "https://etcodkrnkvxeptglpwwc.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_B2GJhWrbQihkwtfV1Lp9Vw_LRBzpoj5";
-
-    async function cargarPromociones() {
-      const contenedor = document.getElementById("promociones");
-
-      try {
-        const respuesta = await fetch(
-          SUPABASE_URL +
-          "/rest/v1/promociones?select=nombre,descripcion,fecha_inicio,fecha_fin,imagen_url,premios&publicada=eq.true",
-          {
-            headers: {
-              apikey: SUPABASE_KEY
-            }
-          }
-        );
-
-        if (!respuesta.ok) {
-          throw new Error("No se pudieron consultar las promociones");
-        }
-
-        const promociones = await respuesta.json();
-        contenedor.replaceChildren();
-
-        if (promociones.length === 0) {
-          contenedor.textContent = "Próximamente nuevas promociones.";
-          return;
-        }
-
-        promociones.forEach(promo => {
-          const tarjeta = document.createElement("article");
-          tarjeta.className = "tarjeta";
-
-          if (promo.imagen_url &&
-              /^https:\/\//i.test(promo.imagen_url)) {
-            const imagen = document.createElement("img");
-            imagen.src = promo.imagen_url;
-            imagen.alt = promo.nombre || "Promoción";
-            tarjeta.appendChild(imagen);
-          }
-
-          const contenido = document.createElement("div");
-          contenido.className = "contenido";
-
-          const titulo = document.createElement("h3");
-          titulo.textContent = promo.nombre || "Promoción";
-
-          const descripcion = document.createElement("p");
-          descripcion.textContent = promo.descripcion || "";
-
-          const premios = document.createElement("p");
-          premios.className = "premios";
-          premios.textContent = promo.premios || "";
-
-          contenido.append(titulo, descripcion, premios);
-          tarjeta.appendChild(contenido);
-          contenedor.appendChild(tarjeta);
-        });
-
-      } catch (error) {
-        console.error(error);
-        contenedor.textContent =
-          "No fue posible cargar las promociones.";
-      }
-    }
-
-    cargarPromociones();
-  </script>
-
-</body>
-</html>
+<header><img src="logo-slots-viena.jpeg" alt="Logo original Slots Viena"><h1>Viví la experiencia Ganadora</h1><div class="rule"></div><p>Promociones y experiencias exclusivas de Slots Viena</p><nav aria-label="Navegación principal"><a href="#promociones">Promociones</a><a href="#experiencias">Experiencias</a></nav></header>
+<main class="wrap"><section id="promociones"><h2>Promociones vigentes</h2><p class="subtitle">Descubrí todo lo que preparamos para vos.</p><div class="cards" id="cards"><p class="notice" id="status">Cargando promociones…</p></div></section><section class="features" id="experiencias"><h2>Próximamente, más experiencias</h2><div class="feature-grid"><div class="feature"><strong>Club V</strong><span>Beneficios para socios</span></div><div class="feature"><strong>Eventos</strong><span>Novedades de la sala</span></div><div class="feature"><strong>Promociones</strong><span>Todo en un solo lugar</span></div><div class="feature"><strong>Tarjetas NFC</strong><span>Experiencias interactivas</span></div></div></section></main><footer>Slots Viena Digital · Viví la experiencia Ganadora</footer>
+<script>
+// IMPORTANTE: Pegá aquí la clave PUBLISHABLE de Supabase que usabas en tu archivo anterior.
+// Nunca uses una clave secret ni service_role en una página pública.
+const SUPABASE_URL='https://etcodkrnkvxeptglpwwc.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_B2GJhWrbQihkwtfV1Lp9Vw_LRBzpoj5';
+const cards=document.getElementById('cards');
+function el(tag,cls,text){const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined&&text!==null)node.textContent=String(text);return node}
+function renderPromo(p,index){const card=el('article','promo'+(index===0?' featured':''));const name=String(p.nombre||'Promoción');const isRound=/9\s*(?:no|º|°)?\s*round|noveno round/i.test(name);if(isRound){const img=el('img');img.src='round-9.jpeg';img.alt='Flyer oficial de El 9no Round';img.loading='lazy';card.append(img)}else if(p.imagen_url&&/^https:\/\//i.test(p.imagen_url)){const img=el('img');img.src=p.imagen_url;img.alt='Imagen de '+name;img.loading='lazy';card.append(img)}const body=el('div','promo-body');body.append(el('h3','',name));if(p.descripcion)body.append(el('p','',p.descripcion));if(p.premios)body.append(el('p','premio',p.premios));if(p.fecha_inicio||p.fecha_fin){const date=el('p','dates',[p.fecha_inicio&&'Desde '+p.fecha_inicio,p.fecha_fin&&'Hasta '+p.fecha_fin].filter(Boolean).join(' · '));body.append(date)}const btn=el('button','button','Ver detalles');btn.type='button';btn.setAttribute('aria-expanded','false');const details=el('div','details','Consultá en la sala de Slots Viena las condiciones de participación.');details.hidden=true;btn.addEventListener('click',()=>{details.hidden=!details.hidden;btn.setAttribute('aria-expanded',String(!details.hidden));btn.textContent=details.hidden?'Ver detalles':'Ocultar detalles'});body.append(btn,details);card.append(body);return card}
+async function load(){if(SUPABASE_PUBLISHABLE_KEY==='PEGAR_AQUI_TU_PUBLISHABLE_KEY'){cards.replaceChildren(el('p','notice','Falta configurar la clave publishable de Supabase en index.html. La plataforma no puede consultar promociones todavía.'));return}try{const response=await fetch(SUPABASE_URL+'/rest/v1/promociones?select=nombre,descripcion,fecha_inicio,fecha_fin,imagen_url,premios&publicada=eq.true',{headers:{apikey:SUPABASE_PUBLISHABLE_KEY}});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();cards.replaceChildren();if(!Array.isArray(data)||data.length===0){cards.append(el('p','notice','Próximamente nuevas promociones.'));return}data.forEach((p,i)=>cards.append(renderPromo(p,i)))}catch(e){console.error(e);cards.replaceChildren(el('p','notice','No se pudieron cargar las promociones. Revisá la clave publishable y los permisos de Supabase.'))}}
+load();
+</script>
+</body></html>
